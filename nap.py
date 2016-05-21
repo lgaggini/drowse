@@ -83,23 +83,30 @@ class Resource(object):
             url = self.url + '/' + str(self.id)
         if len(kwargs) > 0:
             url = "%s?%s" % (url, urllib.urlencode(kwargs))
-        return requests.get(url, auth=self.api.auth, headers=self.api.customHeaders, verify=self.api.verify).json()
+        response = requests.get(url, auth=self.api.auth, headers=self.api.customHeaders, verify=self.api.verify)
+        response.raise_for_status()
+        return response.json()
 
     # POST /resource
     def post(self, json):
-        return requests.post(self.url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
+        response = requests.post(self.url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
+        response.raise_for_status()
+        return response.json()
 
     # PUT /resource/id
     def put(self, json):
         if not self.id:
             return
         url = self.url + '/' + str(self.id)
-        return requests.put(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
+        response = requests.put(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
+        response.raise_for_status()
+        return response.json()
 
     # DELETE /resource/id
     def delete(self, id, json=None):
         url = self.url + '/' + str(id)
-        return requests.delete(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify);
+        response = requests.delete(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify);
+        response.raise_for_status()
 
 
 class API(object):
