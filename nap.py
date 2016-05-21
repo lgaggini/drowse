@@ -83,18 +83,18 @@ class Resource(object):
             url = self.url + '/' + str(self.id)
         if len(kwargs) > 0:
             url = "%s?%s" % (url, urllib.urlencode(kwargs))
-        return requests.get(url, verify=self.api.verify).json()
+        return requests.get(url, auth=self.api.auth, headers=self.api.customHeaders, verify=self.api.verify).json()
 
     # POST /resource
     def post(self, json):
-        return requests.post(url, headers=headers, json=json, verify=self.api.verify).json()
+        return requests.post(self.url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
 
     # PUT /resource/id
     def put(self, json):
         if not self.id:
             return
         url = self.url + '/' + str(self.id)
-        return requests.put(url, headers=headers, json=json, verify=self.api.verify).json()
+        return requests.put(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
 
     # DELETE /resource/id
     def delete(self, id, json):
@@ -103,10 +103,14 @@ class Resource(object):
 
 
 class API(object):
-    def __init__(self, base_url, verify=True):
+    def __init__(self, base_url, authUser=None, authKeyHeader=None, authSecret=None, authSecretHash=True, verify=True):
         self.base_url = base_url + '/' if not base_url.endswith('/') else base_url
         self.resources = {}
+        self.auth = None;
+        self.customHeaders = None;
         self.verify = verify
+
+        self._auth(authUser, authKeyHeader, authSecret, authSecretHash)
 
     def __getattr__(self, name):
         #logging.info("API.getattr.name: %s" % name)
@@ -117,3 +121,16 @@ class API(object):
             self.resources[key] = Resource(uri=key,
                                            api=self)
         return self.resources[key]
+
+    def _auth(self, authUser, authKeyHeader, authSecret, authSecretHash):
+        # basic http auth
+        if authUser and not authSecretHash:
+            self.auth = requests.auth.HTTPBasicAuth(authUser, authSecret)
+            return
+        # digest http auth
+        elif authUser and authSecretHash:
+            self.auth = requests.auth.HTTPDigestAuth(authUser, authSecret)
+            return
+        # custom key auth
+        elif authKeyHeader:
+            self.customHeaders = {authKeyHeader: authSecret}
