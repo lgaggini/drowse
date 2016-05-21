@@ -16,20 +16,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
+'''
 Nap is a slim REST client for python
-"""
+'''
 
-#__all__ = ["API", "Resource"]
-__version__ = "0.0.1"
-__author__ = "Lorenzo Gaggini"
+#__all__ = ['API', 'Resource']
+__version__ = '0.0.1'
+__author__ = 'Lorenzo Gaggini'
 __contributors__ = []
 
 import logging
 import urllib
 import requests
 
-USER_AGENT = "python-nap/%s" % __version__
+USER_AGENT = 'python-nap/%s' % __version__
 
 logging.basicConfig(level=logging.INFO)
 
@@ -47,10 +47,10 @@ class Resource(object):
         self.attrs = {}
 
     def __getattr__(self, name):
-        """
+        '''
         Resource attributes (eg: user.name) have priority
         over inner rerouces (eg: users(id=123).applications)
-        """
+        '''
         logging.debug('getattr.name: %s' % name)
         # Reource attrs like: user.name
         if name in self.attrs:
