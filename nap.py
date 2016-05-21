@@ -97,9 +97,9 @@ class Resource(object):
         return requests.put(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
 
     # DELETE /resource/id
-    def delete(self, id, json):
+    def delete(self, id, json=None):
         url = self.url + '/' + str(id)
-        return request.delete(url, headers=headers, json=json, verify=self.api.verify).json();
+        return requests.delete(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify);
 
 
 class API(object):
