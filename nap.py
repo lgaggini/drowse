@@ -106,8 +106,8 @@ class API(object):
     def __init__(self, base_url, authUser=None, authKeyHeader=None, authSecret=None, authSecretHash=True, verify=True):
         self.base_url = base_url + '/' if not base_url.endswith('/') else base_url
         self.resources = {}
-        self.auth = None;
-        self.customHeaders = None;
+        self.auth = None
+        self.customHeaders = {'User-Agent': USER_AGENT}
         self.verify = verify
 
         self._auth(authUser, authKeyHeader, authSecret, authSecretHash)
@@ -133,4 +133,4 @@ class API(object):
             return
         # custom key auth
         elif authKeyHeader:
-            self.customHeaders = {authKeyHeader: authSecret}
+            self.customHeaders[authKeyHeader] = authSecret
