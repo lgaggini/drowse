@@ -31,7 +31,7 @@ import requests
 
 USER_AGENT = "python-nap/%s" % __version__
 
-logging.basicConfig(level=0)
+logging.basicConfig(level=logging.INFO)
 
 
 class Resource(object):
@@ -40,7 +40,6 @@ class Resource(object):
     # so Resource can have a minimalist namespace  population
     # and minimize collitions with resource attributes
     def __init__(self, uri, api):
-        #logging.info("init.uri: %s" % uri)
         self.api = api
         self.uri = uri
         self.url = api.base_url + uri
@@ -52,20 +51,21 @@ class Resource(object):
         Resource attributes (eg: user.name) have priority
         over inner rerouces (eg: users(id=123).applications)
         """
-        #logging.info("getattr.name: %s" % name)
+        logging.debug('getattr.name: %s' % name)
         # Reource attrs like: user.name
         if name in self.attrs:
             return self.attrs.get(name)
-        #logging.info("self.url: %s" % self.url)
+        logging.debug('self.url: %s' % self.url)
         # Inner resoruces for stuff like: GET /users/{id}/applications
         key = self.uri + '/' + name
+        logging.info('Accessing inner resource with uri: %s' % key)
         self.api.resources[key] = Resource(uri=key,
                                            api=self.api)
         return self.api.resources[key]
 
     def __call__(self, id=None):
-        #logging.info("call.id: %s" % id)
-        #logging.info("call.self.url: %s" % self.url)
+        logging.debug('call.id: %s' % id)
+        logging.debug('call.self.url: %s' % self.url)
         if id == None:
             return self
         self.id = str(id)
@@ -82,13 +82,15 @@ class Resource(object):
         else:
             url = self.url + '/' + str(self.id)
         if len(kwargs) > 0:
-            url = "%s?%s" % (url, urllib.urlencode(kwargs))
+            url = '%s?%s' % (url, urllib.urlencode(kwargs))
+        logging.info('GET %s ' % url)
         response = requests.get(url, auth=self.api.auth, headers=self.api.customHeaders, verify=self.api.verify)
         response.raise_for_status()
         return response.json()
 
     # POST /resource
     def post(self, json):
+        logging.info('POST %s ' % url)
         response = requests.post(self.url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
         response.raise_for_status()
         return response.json()
@@ -98,6 +100,7 @@ class Resource(object):
         if not self.id:
             return
         url = self.url + '/' + str(self.id)
+        logging.info('PUT %s ' % url)
         response = requests.put(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
         response.raise_for_status()
         return response.json()
@@ -105,6 +108,7 @@ class Resource(object):
     # DELETE /resource/id
     def delete(self, id, json=None):
         url = self.url + '/' + str(id)
+        logging.info('DELETE %s ' % url)
         response = requests.delete(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify);
         response.raise_for_status()
 
@@ -118,13 +122,15 @@ class API(object):
         self.verify = verify
 
         self._auth(authUser, authKeyHeader, authSecret, authSecretHash)
+        logging.debug('http auth %s' % self.auth)
+        logging.debug('requests customHeaders' % self.customHeaders)
 
     def __getattr__(self, name):
-        #logging.info("API.getattr.name: %s" % name)
+        logging.debug('API.getattr.name: %s' % name)
         
         key = name
         if not key in self.resources:
-            #logging.info("Creating resource with uri: %s" % key)
+            logging.info('Accessing resource with uri: %s' % key)
             self.resources[key] = Resource(uri=key,
                                            api=self)
         return self.resources[key]
