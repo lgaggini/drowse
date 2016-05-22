@@ -1,7 +1,7 @@
 #    drowse
 #
 #    Copyright (c) 2016 Lorenzo Gaggini
-#    Based on a work by (c) 2008 Rafael Xavier de Souza    
+#    Based on a work by (c) 2008 Rafael Xavier de Souza
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,14 +20,15 @@
 Drowse is a slim REST client for python
 '''
 
-#__all__ = ['API', 'Resource']
+import logging
+import urllib
+import requests
+
+__all__ = ['API', 'Resource']
 __version__ = '0.1.0'
 __author__ = 'Lorenzo Gaggini'
 __contributors__ = []
 
-import logging
-import urllib
-import requests
 
 USER_AGENT = 'python-drowse/%s' % __version__
 
@@ -66,7 +67,7 @@ class Resource(object):
     def __call__(self, id=None):
         logging.debug('call.id: %s' % id)
         logging.debug('call.self.url: %s' % self.url)
-        if id == None:
+        if id is None:
             return self
         self.id = str(id)
         key = self.uri + '/' + self.id
@@ -77,21 +78,25 @@ class Resource(object):
     # GET /resource
     # GET /resource/id?arg1=value1&...
     def get(self, **kwargs):
-        if self.id == None:
+        if self.id is None:
             url = self.url
         else:
             url = self.url + '/' + str(self.id)
         if len(kwargs) > 0:
             url = '%s?%s' % (url, urllib.urlencode(kwargs))
         logging.info('GET %s ' % url)
-        response = requests.get(url, auth=self.api.auth, headers=self.api.customHeaders, verify=self.api.verify)
+        response = requests.get(url, auth=self.api.auth,
+                                headers=self.api.customHeaders,
+                                verify=self.api.verify)
         response.raise_for_status()
         return response.json()
 
     # POST /resource
     def post(self, json):
         logging.info('POST %s ' % url)
-        response = requests.post(self.url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
+        response = requests.post(self.url, auth=self.api.auth,
+                                 headers=self.api.customHeaders,
+                                 json=json, verify=self.api.verify)
         response.raise_for_status()
         return response.json()
 
@@ -101,7 +106,9 @@ class Resource(object):
             return
         url = self.url + '/' + str(self.id)
         logging.info('PUT %s ' % url)
-        response = requests.put(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify).json()
+        response = requests.put(url, auth=self.api.auth,
+                                headers=self.api.customHeaders,
+                                json=json, verify=self.api.verify)
         response.raise_for_status()
         return response.json()
 
@@ -109,13 +116,17 @@ class Resource(object):
     def delete(self, id, json=None):
         url = self.url + '/' + str(id)
         logging.info('DELETE %s ' % url)
-        response = requests.delete(url, auth=self.api.auth, headers=self.api.customHeaders, json=json, verify=self.api.verify);
+        response = requests.delete(url, auth=self.api.auth,
+                                   headers=self.api.customHeaders,
+                                   json=json, verify=self.api.verify)
         response.raise_for_status()
 
 
 class API(object):
-    def __init__(self, base_url, authUser=None, authKeyHeader=None, authSecret=None, authSecretHash=True, verify=True):
-        self.base_url = base_url + '/' if not base_url.endswith('/') else base_url
+    def __init__(self, base_url, authUser=None, authKeyHeader=None,
+                 authSecret=None, authSecretHash=True, verify=True):
+        self.base_url = base_url + \
+                        '/' if not base_url.endswith('/') else base_url
         self.resources = {}
         self.auth = None
         self.customHeaders = {'User-Agent': USER_AGENT}
@@ -127,9 +138,9 @@ class API(object):
 
     def __getattr__(self, name):
         logging.debug('API.getattr.name: %s' % name)
-        
+
         key = name
-        if not key in self.resources:
+        if key not in self.resources:
             logging.info('Accessing resource with uri: %s' % key)
             self.resources[key] = Resource(uri=key,
                                            api=self)
