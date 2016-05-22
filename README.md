@@ -13,6 +13,7 @@ repos = api.users.lgaggini.repos.get()
 * human-readable
 * powered by rock-solid requests
 * json only
+* errors and exceptions leaved to upper layers
 
 ## Install
 ```
