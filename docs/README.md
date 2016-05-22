@@ -110,7 +110,7 @@ This is a no response method.
 
 #### 4XX and 5XX error codes
 
-drowse doesn`t perform any check on response status code, if a request returns and HTTP error code (both client and server) the requests underlying library raise an exception of type `requests.exceptions.HTTPError` with the status code in the message.
+drowse doesn't perform any check on response status code, if a request returns and HTTP error code (both client and server) the requests underlying library raise an exception of type `requests.exceptions.HTTPError` with the status code in the message.
 You have to manage these for your worflow.
 
 #### Errors and Exceptions
