@@ -21,7 +21,7 @@ Drowse is a slim REST client for python
 '''
 
 #__all__ = ['API', 'Resource']
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 __author__ = 'Lorenzo Gaggini'
 __contributors__ = []
 
