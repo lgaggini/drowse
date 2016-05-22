@@ -27,4 +27,4 @@ pip package to come.
 Beta version 0.1.0, manual tested on a little tests set.
 
 ## Documentation (wip)
-See the docs folder.
+See the [readme](https://github.com/lgaggini/drowse/tree/master/docs/README.md) in the docs folder.
