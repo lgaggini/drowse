@@ -1,4 +1,4 @@
-#    Python Nap
+#    drowse
 #
 #    Copyright (c) 2016 Lorenzo Gaggini
 #    Based on a work by (c) 2008 Rafael Xavier de Souza    
@@ -17,7 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-Nap is a slim REST client for python
+Drowse is a slim REST client for python
 '''
 
 #__all__ = ['API', 'Resource']
@@ -29,7 +29,7 @@ import logging
 import urllib
 import requests
 
-USER_AGENT = 'python-nap/%s' % __version__
+USER_AGENT = 'python-drowse/%s' % __version__
 
 logging.basicConfig(level=logging.INFO)
 
