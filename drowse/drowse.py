@@ -105,7 +105,7 @@ class Resource(object):
             logging.error('id is mandatory for put')
             return
         logging.info('PUT %s ' % self.url)
-        response = requests.put(url, auth=self.api.auth,
+        response = requests.put(self.url, auth=self.api.auth,
                                 headers=self.api.customHeaders,
                                 json=json, verify=self.api.verify)
         response.raise_for_status()
@@ -117,7 +117,7 @@ class Resource(object):
             logging.error('id is mandatory for delete')
             return
         logging.info('DELETE %s ' % self.url)
-        response = requests.delete(url, auth=self.api.auth,
+        response = requests.delete(self.url, auth=self.api.auth,
                                    headers=self.api.customHeaders,
                                    json=json, verify=self.api.verify)
         response.raise_for_status()
