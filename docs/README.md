@@ -9,7 +9,7 @@ API constructor has only one required parameter, the base url of the api, es `ht
 
 ```python
 from drowse import API
-api = API(`https://my.endpooint.base/api/v1/`)
+api = API('https://my.endpooint.base/api/v1/')
 ```
 The API object is the base used for all requests.
 
@@ -18,20 +18,20 @@ drowse support 3 authentication method in API creation:
 
 * basic http authentication by `authUser` parameter and `authSecret` parameter
 ```python
-api = API(`https://my.endpooint.base/api/v1/`, authUser=`my_user', authSecret='my_secret', authSecretHash=False)
+api = API('https://my.endpooint.base/api/v1/', authUser='my_user', authSecret='my_secret', authSecretHash=False)
 ```
 * digest http authentication by authUser parameter and `authSecret` parameter with flag authSecretHash set to True (default)
 ```python
-api = API(`https://my.endpooint.base/api/v1/`, authUser=`my_user', authSecret='my_secret', authSecretHash=True)
+api = API('https://my.endpooint.base/api/v1/', authUser='my_user', authSecret='my_secret', authSecretHash=True)
 ```
 * custom header token authentication by `authKeyHeader` parameter and `authSecret` parameter
 ```python
-api = API(`https://my.endpooint.base/api/v1/`, authKeyHeader=`my_token_header' authSecret='my_token')
+api = API('https://my.endpooint.base/api/v1/', authKeyHeader='my_token_header' authSecret='my_token')
 ```
 
 All of this parameters have as default `None` so if you don`t provide them you have a no authenticated connection.
 ```python
-api = API(`https://my.endpooint.base/api/v1/`)
+api = API('https://my.endpooint.base/api/v1/')
 ```
 
 #### SSL
@@ -39,7 +39,7 @@ drowse expose the requests verify flags, which controls if to verify or not the 
 you can set it to False.
 
 ```python
-api = API(`https://my.endpooint.base/api/v1/`, verify=False)
+api = API('https://my.endpooint.base/api/v1/', verify=False)
 ```
 
 ### Interaction
