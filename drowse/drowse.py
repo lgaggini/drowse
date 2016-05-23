@@ -40,11 +40,11 @@ class Resource(object):
     # TODO: some attrs could be on a inner meta class
     # so Resource can have a minimalist namespace  population
     # and minimize collitions with resource attributes
-    def __init__(self, uri, api):
+    def __init__(self, uri, api, id):
         self.api = api
         self.uri = uri
         self.url = api.base_url + uri
-        self.id = None
+        self.id = id
         self.attrs = {}
 
     def __getattr__(self, name):
@@ -61,7 +61,8 @@ class Resource(object):
         key = self.uri + '/' + name
         logging.info('Accessing inner resource with uri: %s' % key)
         self.api.resources[key] = Resource(uri=key,
-                                           api=self.api)
+                                           api=self.api,
+                                           id=None)
         return self.api.resources[key]
 
     def __call__(self, id=None):
@@ -69,19 +70,17 @@ class Resource(object):
         logging.debug('call.self.url: %s' % self.url)
         if id is None:
             return self
-        self.id = str(id)
-        key = self.uri + '/' + self.id
+        key = self.uri + '/' + str(id)
         self.api.resources[key] = Resource(uri=key,
-                                           api=self.api)
+                                           api=self.api,
+                                           id=id)
+        logging.debug(self.api.resources)
         return self.api.resources[key]
 
     # GET /resource
     # GET /resource/id?arg1=value1&...
     def get(self, **kwargs):
-        if self.id is None:
-            url = self.url
-        else:
-            url = self.url + '/' + str(self.id)
+        url = self.url
         if len(kwargs) > 0:
             url = '%s?%s' % (url, urllib.urlencode(kwargs))
         logging.info('GET %s ' % url)
@@ -102,10 +101,10 @@ class Resource(object):
 
     # PUT /resource/id
     def put(self, json):
-        if not self.id:
+        if self.id is None:
+            logging.error('id is mandatory for put')
             return
-        url = self.url + '/' + str(self.id)
-        logging.info('PUT %s ' % url)
+        logging.info('PUT %s ' % self.url)
         response = requests.put(url, auth=self.api.auth,
                                 headers=self.api.customHeaders,
                                 json=json, verify=self.api.verify)
@@ -113,9 +112,11 @@ class Resource(object):
         return response.json()
 
     # DELETE /resource/id
-    def delete(self, id, json=None):
-        url = self.url + '/' + str(id)
-        logging.info('DELETE %s ' % url)
+    def delete(self, json=None):
+        if self.id is None:
+            logging.error('id is mandatory for delete')
+            return
+        logging.info('DELETE %s ' % self.url)
         response = requests.delete(url, auth=self.api.auth,
                                    headers=self.api.customHeaders,
                                    json=json, verify=self.api.verify)
@@ -143,7 +144,8 @@ class API(object):
         if key not in self.resources:
             logging.info('Accessing resource with uri: %s' % key)
             self.resources[key] = Resource(uri=key,
-                                           api=self)
+                                           api=self,
+                                           id=None)
         return self.resources[key]
 
     def _auth(self, authUser, authKeyHeader, authSecret, authSecretHash):
