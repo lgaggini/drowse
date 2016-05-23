@@ -5,7 +5,7 @@ with open('README.md') as file:
 
 setup(
     name = 'drowse',
-    version = '0.1.0',
+    version = '0.2.0',
     author = 'Lorenzo Gaggini',
     author_email = 'lg@lgaggini.net',
     packages = ['drowse'],

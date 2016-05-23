@@ -25,7 +25,7 @@ python2 setup.py install
 pip package to come.
 
 ## Status
-Beta version 0.1.0, manual tested on a little tests set.
+Beta version 0.2.0, manual tested on a medium tests set.
 
 ## Documentation
 See the [readme](https://github.com/lgaggini/drowse/tree/master/docs/README.md) in the docs folder.
