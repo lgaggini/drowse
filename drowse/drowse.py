@@ -93,7 +93,7 @@ class Resource(object):
 
     # POST /resource
     def post(self, json):
-        logging.info('POST %s ' % url)
+        logging.info('POST %s ' % self.url)
         response = requests.post(self.url, auth=self.api.auth,
                                  headers=self.api.customHeaders,
                                  json=json, verify=self.api.verify)
