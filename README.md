@@ -16,13 +16,17 @@ repos = api.users.lgaggini.repos.get()
 * errors and exceptions leaved to upper layers
 
 ## Install
+### Github
 ```
 git clone https://github.com/lgaggini/drowse.git
 cd drowse
 python2 setup.py install
 ```
 
-pip package to come.
+### Pypi
+```
+pip install drowse
+```
 
 ## Status
 Beta version 0.2.0, manual tested on a medium tests set.
